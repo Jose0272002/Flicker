@@ -4,14 +4,10 @@
     android:viewportWidth="100"
     android:viewportHeight="100">
 
-    <!-- Fondo azul oscuro -->
-    <path
-        android:fillColor="#000000"
-        android:pathData="M10,10 H90 V90 H10 Z" />
+
 
     <!-- Triángulo de reproducción negro con bordes gruesos -->
     <path
-        android:fillColor="#000"
         android:strokeColor="#FF0D47A1"
         android:strokeWidth="5"
         android:pathData="M45,40 L45,60 L60,50 Z" />
