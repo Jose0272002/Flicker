@@ -62,7 +62,7 @@ fun RegisterScreen(navController: NavController) {
                     .padding(paddingValues)
             ) {
                 Text(
-                    text = "Register Screen",
+                    text = "Register",
                     style = MaterialTheme.typography.headlineMedium
                 )
                 Spacer(modifier = Modifier.height(16.dp))

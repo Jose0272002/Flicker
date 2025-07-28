@@ -62,7 +62,7 @@ fun LoginScreen(navController: NavController) {
                     .padding(paddingValues)
             ) {
                 Text(
-                    text = "Login Screen",
+                    text = "Login",
                     style = MaterialTheme.typography.headlineMedium
                 )
                 Spacer(modifier = Modifier.height(16.dp))

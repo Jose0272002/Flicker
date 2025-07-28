@@ -2,6 +2,7 @@ package com.example.flicker.presentation.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AppRegistration
+import androidx.compose.material.icons.filled.CameraRoll
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
@@ -14,4 +15,7 @@ sealed class Screen(var title: String, var icon: ImageVector,val route: String) 
     object Login : Screen("Login", Icons.Default.Person, "login_screen")
     object Register : Screen("Register", Icons.Default.AppRegistration, "register_screen")
     object Watchlist: Screen( "Watchlist", Icons.Default.Star, "watchlist_screen")
+    object Content : Screen("Content", Icons.Default.CameraRoll, "content_screen")
+    object Channel : Screen("Channel", Icons.Default.CameraRoll, "channel_screen")
+
 }

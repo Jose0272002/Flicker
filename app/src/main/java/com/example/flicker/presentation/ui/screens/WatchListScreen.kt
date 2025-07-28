@@ -63,7 +63,7 @@ fun WatchlistScreen(navController: NavController) {
                     .padding(paddingValues)
             ) {
                 Text(
-                    text = "Watchlist Screen",
+                    text = "Watchlist",
                     style = MaterialTheme.typography.headlineMedium
                 )
                 Spacer(modifier = Modifier.height(16.dp))

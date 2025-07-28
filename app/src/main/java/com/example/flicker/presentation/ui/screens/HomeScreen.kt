@@ -35,11 +35,6 @@ fun HomeScreen(navController: NavController) {
                 )
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { /* Acción del FAB */ }) {
-                Icon(imageVector =  Icons.Default.Search, contentDescription = "Search")
-            }
-        },
         content = { paddingValues ->
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -50,15 +45,19 @@ fun HomeScreen(navController: NavController) {
                     .padding(paddingValues)
             ) {
                 Text(
-                    text = "Home Screen",
+                    text = "Home",
                     style = MaterialTheme.typography.headlineMedium
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
-            // Al pulsar en el botón abre la ventana de Detalles con el parámetro 123
-                onClick = { navController.navigate(Screen.Search.route) }
+                onClick = { navController.navigate(Screen.Content.route) }
                 ) {
-                    Text("Logout")
+                    Text("Video")
+                }
+                Button(
+                    onClick = { navController.navigate(Screen.Channel.route) }
+                ) {
+                    Text("Channel")
                 }
             }
         }
