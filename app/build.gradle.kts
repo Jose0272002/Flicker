@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.packaging.defaultExcludes
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -53,13 +55,13 @@ dependencies {
     implementation ("androidx.core:core-splashscreen:1.0.1")
 
 
-        // Jetpack Media3 - Player (ExoPlayer)
-        implementation ("androidx.media3:media3-exoplayer:1.7.1")
-        // Jetpack Media3 - UI (PlayerView, StyledPlayerView)
-        // Para los controles y la vista del reproductor
-        implementation ("androidx.media3:media3-ui:1.7.1")
-        // Jetpack Media3 - Common
-        // implementation 'androidx.media3:media3-common:1.3.1'
+    // Jetpack Media3 - Player (ExoPlayer)
+    implementation ("androidx.media3:media3-exoplayer:1.7.1")
+    // Jetpack Media3 - UI (PlayerView, StyledPlayerView)
+    // Para los controles y la vista del reproductor
+    implementation ("androidx.media3:media3-ui:1.7.1")
+    // Jetpack Media3 - HLS
+    implementation ("androidx.media3:media3-exoplayer-hls:1.7.1")
 
 
     implementation(libs.androidx.core.ktx)

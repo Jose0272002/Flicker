@@ -1,5 +1,6 @@
 package com.example.flicker.presentation.ui.components
 
+import android.content.res.AssetFileDescriptor
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -20,7 +21,7 @@ import androidx.media3.common.Player // Ensure this import is correct
 @OptIn(UnstableApi::class)
 @Composable
 fun ChannelVideoPlayerCompose(
-    rawResourceId: Int,
+    assetFileName: String,
     modifier: Modifier = Modifier,
     onFullscreenToggle: ((Boolean) -> Unit)? = null // Optional callback
 ) {
@@ -28,11 +29,11 @@ fun ChannelVideoPlayerCompose(
 
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
-            val rawUri = "android.resource://" + context.packageName + "/" + rawResourceId
+            val assetUri = "file:///android_asset/" + assetFileName
             val mediaItem = try {
-                MediaItem.fromUri(rawUri.toUri())
+                MediaItem.fromUri(assetUri.toUri())
             } catch (e: Exception) {
-                Log.e("ChannelVideoPlayer", "Error parsing raw resource URI: $e. URI was: $rawUri")
+                Log.e("ChannelVideoPlayer", "Error parsing raw resource URI: $e. URI was: $assetUri")
                 MediaItem.EMPTY // Provide a fallback
             }
 

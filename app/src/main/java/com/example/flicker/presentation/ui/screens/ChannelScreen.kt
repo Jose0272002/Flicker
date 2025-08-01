@@ -20,7 +20,6 @@ import androidx.navigation.NavController
 import com.example.flicker.presentation.ui.components.ChannelVideoPlayerCompose
 import com.example.flicker.presentation.ui.components.VideoPlayerCompose
 import com.example.flicker.presentation.viewmodels.ContentViewModel
-import com.example.flicker.R
 
 @Composable
 fun ChannelScreen(
@@ -98,7 +97,7 @@ fun ChannelScreen(
         // Video Player Container
         // El video siempre ocupará el 100% de la pantalla
         ChannelVideoPlayerCompose(
-            rawResourceId = R.raw.la1_main_dvr , // Reemplaza con tu recurso de video,
+            assetFileName ="tdp_main_dvr.m3u8" ,
             modifier = Modifier.fillMaxSize(), // VideoPlayerCompose siempre llena este Box
             onFullscreenToggle = { isFullscreen ->
                 contentViewModel.setFullscreenState(isFullscreen)
