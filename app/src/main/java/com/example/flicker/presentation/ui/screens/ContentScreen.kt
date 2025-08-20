@@ -32,8 +32,6 @@ fun Context.findActivity(): Activity? = when (this) {
 @Composable
 fun ContentScreen(
     navController: NavController,
-    // innerPadding ya no es necesario aquí si no hay Scaffold
-    // innerPadding: PaddingValues, // Puedes eliminar este parámetro si no lo pasas
     contentViewModel: ContentViewModel = viewModel(),
     onSetContentScreenFullscreen: (Boolean) -> Unit // Callback to notify NavGraph
 ) {

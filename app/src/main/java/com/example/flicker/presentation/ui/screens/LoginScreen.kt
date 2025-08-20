@@ -33,20 +33,6 @@ import com.example.flicker.presentation.navigation.Screen
 fun LoginScreen(navController: NavController) {
     Scaffold(
         modifier = Modifier.background(color = Color(0xFF000000)),
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text("FLICK ER  ",
-                        Modifier.fillMaxWidth().wrapContentSize(Alignment.Center))
-                },
-
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = Color(0xFF0D47A1),
-
-                    )
-            )
-        },
         floatingActionButton = {
             FloatingActionButton(onClick = { /* Acción del FAB */ }) {
                 Icon(imageVector =  Icons.Default.Search, contentDescription = "Search")
@@ -68,7 +54,12 @@ fun LoginScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     // Al pulsar en el botón abre la ventana de Detalles con el parámetro 123
-                    onClick = { navController.navigate(Screen.Register.route) }
+                    onClick = { navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Login.route) {
+                            inclusive = true // Clave: Elimina LoginScreen del backstack
+                        }
+                        launchSingleTop = true // Opcional pero recomendado para evitar múltiples instancias de Home
+                    }}
                 ) {
                     Text("Logout")
                 }

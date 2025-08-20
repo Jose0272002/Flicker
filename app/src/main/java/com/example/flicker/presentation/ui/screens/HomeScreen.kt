@@ -28,22 +28,6 @@ fun HomeScreen(navController: NavController) {
     val context = LocalContext.current
     Scaffold(
         modifier = Modifier.background(color = Color(0xFF000000)),
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text("FLICK ER  ",
-                        Modifier
-                            .fillMaxWidth()
-                            .wrapContentSize(Alignment.Center))
-                        },
-
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = Color(0xFF0D47A1),
-
-                )
-            )
-        },
         content = { paddingValues ->
             Column(
                 verticalArrangement = Arrangement.Top,
