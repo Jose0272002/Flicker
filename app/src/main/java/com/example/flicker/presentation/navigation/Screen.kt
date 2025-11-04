@@ -9,13 +9,14 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
 
-sealed class Screen(var title: String, var icon: ImageVector,val route: String) {
+sealed class Screen(var title: String, var icon: ImageVector, val route: String) {
     object Home : Screen("Home", Icons.Default.Home,"home_screen")
     object Search : Screen("Search", Icons.Default.Search, "search_screen")
     object Login : Screen("Login", Icons.Default.Person, "login_screen")
     object Register : Screen("Register", Icons.Default.AppRegistration, "register_screen")
-    object Watchlist: Screen( "Watchlist", Icons.Default.Star, "watchlist_screen")
-    object Content : Screen("Content", Icons.Default.CameraRoll, "content_screen")
+    object Watchlist: Screen("Watchlist", Icons.Default.Star, "watchlist_screen")
+    object Content : Screen("Content", Icons.Default.CameraRoll, "content_screen/{movieId}") {
+        fun createRoute(movieId: String) = "content_screen/$movieId"
+    }
     object Channel : Screen("Channel", Icons.Default.CameraRoll, "channel_screen")
-
 }

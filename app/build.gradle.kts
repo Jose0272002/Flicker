@@ -45,6 +45,9 @@ android {
 dependencies {
     //Firebase
     implementation("com.google.firebase:firebase-firestore:25.1.1")
+    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
+    //Firebase Authentication library
+    implementation("com.google.firebase:firebase-auth")
     //ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     // Navigation
@@ -53,8 +56,11 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.7.4")
     // SplashScreen
     implementation ("androidx.core:core-splashscreen:1.0.1")
-
-
+    //koin
+    implementation("io.insert-koin:koin-android:3.4.1")
+    implementation("io.insert-koin:koin-androidx-compose:3.4.1")
+    //Coil
+    implementation("io.coil-kt:coil-compose:2.5.0")
     // Jetpack Media3 - Player (ExoPlayer)
     implementation ("androidx.media3:media3-exoplayer:1.7.1")
     // Jetpack Media3 - UI (PlayerView, StyledPlayerView)

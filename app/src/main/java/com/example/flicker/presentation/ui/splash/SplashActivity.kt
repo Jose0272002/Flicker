@@ -37,7 +37,7 @@ class SplashActivity : ComponentActivity() {
 
         // Inicia una coroutine para esperar un tiempo y luego navegar a MainActivity
         lifecycleScope.launch {
-            delay(3000) // Muestra el splash por 3 segundos. Puedes ajustar este tiempo.
+            delay(3000)
             // Navega a tu MainActivity
             startActivity(Intent(this@SplashActivity, MainActivity::class.java))
             finish() // Cierra SplashActivity para que el usuario no pueda volver a ella con el botón "Atrás"
@@ -47,7 +47,7 @@ class SplashActivity : ComponentActivity() {
 
 @Composable
 fun SplashScreenWithBlinkingText() {
-    // Define la animación de parpadeo para el alpha (transparencia)
+    // Define la animación de parpadeo
     val infiniteTransition = rememberInfiniteTransition(label = "blinkingText")
     val alpha by infiniteTransition.animateFloat(
         initialValue = 0f, // Completamente transparente

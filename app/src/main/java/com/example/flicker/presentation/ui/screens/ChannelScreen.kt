@@ -19,7 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.flicker.presentation.ui.components.ChannelVideoPlayerCompose
 import com.example.flicker.presentation.ui.components.VideoPlayerCompose
-import com.example.flicker.presentation.viewmodels.ContentViewModel
+import com.example.flicker.presentation.viewmodel.content.ContentViewModel
 
 @Composable
 fun ChannelScreen(

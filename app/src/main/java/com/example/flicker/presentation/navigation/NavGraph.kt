@@ -22,7 +22,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavType
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navArgument
 import com.example.flicker.presentation.ui.screens.ChannelScreen
 import com.example.flicker.presentation.ui.screens.HomeScreen
 import com.example.flicker.presentation.ui.screens.LoginScreen
@@ -36,26 +38,30 @@ import com.example.flicker.presentation.ui.screens.WatchlistScreen
 fun NavGraph(
     startDestination: String = Screen.Login.route,
     onSetContentScreenFullscreen: (Boolean) -> Unit, // Callback para actualizar el estado global
-    isContentScreenFullscreen: Boolean // Estado actual para ocultar la barra
+    isContentScreenFullscreen: Boolean // Estado actual del contenido
 ) {
     val navController = rememberNavController()
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text("FLICK ER  ",
-                        Modifier
-                            .fillMaxWidth()
-                            .wrapContentSize(Alignment.Center))
-                },
+            if (!isContentScreenFullscreen) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            "FLICK ER  ",
+                            Modifier
+                                .fillMaxWidth()
+                                .wrapContentSize(Alignment.Center)
+                        )
+                    },
 
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = Color(0xFF0D47A1),
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent,
+                        titleContentColor = Color(0xFF0D47A1),
 
-                    )
-            )
+                        )
+                )
+            }
         },
         bottomBar = {
             // La BottomNavigationBar solo se muestra si no estamos en pantalla completa
@@ -86,9 +92,13 @@ fun NavGraph(
             composable(Screen.Watchlist.route) {
                 WatchlistScreen(navController)
             }
-            composable(Screen.Content.route) {
+            composable(
+                route = "${Screen.Content.route}/{movieId}",
+                arguments = listOf(navArgument("movieId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val movieId = backStackEntry.arguments?.getString("movieId") ?: ""
                 ContentScreen(
-                    navController = navController,
+                    movieId = movieId,
                     onSetContentScreenFullscreen = onSetContentScreenFullscreen // Pasa el callback
                 )
             }

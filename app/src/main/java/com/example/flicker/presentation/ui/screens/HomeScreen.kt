@@ -6,73 +6,111 @@ import androidx.compose.runtime.Composable
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.materialIcon
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.Navigator
-import com.example.flicker.R
+import coil.compose.AsyncImage
+import com.example.flicker.domain.model.Movie
 import com.example.flicker.presentation.navigation.Screen
+import com.example.flicker.presentation.viewmodel.movies.MoviesViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController) {
-    val ti = "the_vagabond"
-    val context = LocalContext.current
+fun HomeScreen(
+    navController: NavController,
+    moviesViewModel: MoviesViewModel= koinViewModel()
+) {
+    val movies by moviesViewModel.movies.collectAsState()
+    
+    // Obtener categorías únicas de todas las películas
+    val categories = remember(movies) { 
+        movies.flatMap { it.category ?: emptyList() }
+            .distinct()
+            .filter { it.isNotBlank() }
+    }
+    
     Scaffold(
-        modifier = Modifier.background(color = Color(0xFF000000)),
+        modifier = Modifier.background(color = Color.Black),
         content = { paddingValues ->
             Column(
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start,
                 modifier = Modifier
-
                     .fillMaxSize()
                     .padding(paddingValues)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
             ) {
-                Text(
-                    text = "Home",
-                    style = MaterialTheme.typography.headlineMedium
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Column (
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.Start,
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Row {
-                        val resourceId = context.resources.getIdentifier(
-                            ti,          // The name of the resource (without extension)
-                            "drawable",  // The type of resource
-                            context.packageName // Your app's package name
-                        )
-
-                        if (resourceId != 0) { // Check if the resource was found
-                            Image(
-                                painter = painterResource(id = resourceId),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(200.dp)
-                                    .clickable { navController.navigate(Screen.Content.route) }
-                            )
-                        } else {
-                            Text("Image not found")
+                    categories.forEach { category ->
+                        val moviesInCategory = movies.filter { movie -> 
+                            movie.category?.contains(category) == true 
                         }
-
+                        
+                        if (moviesInCategory.isNotEmpty()) {
+                            item {
+                                Text(
+                                    text = category.uppercase(),
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    color = Color.White,
+                                    modifier = Modifier.padding(horizontal = 8.dp)
+                                )
+                                
+                                LazyRow(
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    modifier = Modifier.padding(vertical = 8.dp)
+                                ) {
+                                    items(moviesInCategory) { movie ->
+                                        MovieCard(movie, navController)
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
+                
                 Button(
-                    onClick = { navController.navigate(Screen.Channel.route) }
+                    onClick = { navController.navigate(Screen.Channel.route) },
+                    modifier = Modifier.padding(top = 16.dp)
                 ) {
                     Text("Channel")
                 }
             }
         }
     )
+}
+@Composable
+fun MovieCard(movie: Movie, navController: NavController) {
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.padding(0.dp)
+            .width(120.dp)
+            .height(200.dp)
+            .clickable {navController.navigate("${Screen.Content.route}/${movie.id}")}
+    ) {
+
+        AsyncImage(
+            model = movie.image,  // URL de la imagen
+            contentDescription = movie.name,
+            modifier = Modifier
+                .size(200.dp)
+                .clickable {navController.navigate("${Screen.Content.route}/${movie.id}")}
+        )
+
+    }
 }

@@ -56,7 +56,7 @@ fun RegisterScreen(navController: NavController) {
                     onClick = {
                         navController.navigate(Screen.Home.route) {
                         popUpTo(Screen.Login.route) {
-                            inclusive = true // Clave: Elimina LoginScreen del backstack
+                            inclusive = true // Clave: Elimina RegisterScreen del backstack
                         }
                         launchSingleTop = true // Opcional pero recomendado para evitar múltiples instancias de Home
                         }

@@ -42,9 +42,10 @@ fun VideoPlayerCompose(
                 setShowPreviousButton(false)
                 setShowFastForwardButton(true)
                 setShowRewindButton(true)
+                setFullscreenButtonState(true)
                 useController = true
                 controllerHideOnTouch= true
-                // Conecta el botón de pantalla completa de PlayerView con el callback
+                // Conecta el botón de pantalla completa de PlayerView con el listener del callback
                 onFullscreenToggle?.let { listener ->
                     setFullscreenButtonClickListener { isEnteringFullscreen ->
                         listener(isEnteringFullscreen) // Llama al callback pasado desde ContentScreen
