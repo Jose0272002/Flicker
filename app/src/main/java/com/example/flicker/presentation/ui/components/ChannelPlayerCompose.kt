@@ -66,7 +66,6 @@ fun ChannelVideoPlayerCompose(
                         Log.d("ExoPlayerState", "Playback State: $stateString for raw resource")
                     }
                 })
-                // --- END ADDITION ---
             }
         }
     }
@@ -79,9 +78,7 @@ fun ChannelVideoPlayerCompose(
             exoPlayer.prepare()
         }
         exoPlayer.playWhenReady = true
-        onDispose {
-            // No explicit release here; handled by DisposableEffect(Unit)
-        }
+        onDispose {}
     }
 
     AndroidView(
@@ -93,6 +90,7 @@ fun ChannelVideoPlayerCompose(
                 setShowPreviousButton(false)
                 setShowFastForwardButton(true)
                 setShowRewindButton(true)
+                setFullscreenButtonState(true)
                 useController = true
                 controllerHideOnTouch = true
                 controllerShowTimeoutMs = 5000
@@ -100,7 +98,6 @@ fun ChannelVideoPlayerCompose(
                 onFullscreenToggle?.let { listener ->
                     setFullscreenButtonClickListener { isEnteringFullscreen ->
                         listener(isEnteringFullscreen)
-                        Log.d("ChannelPlayer", "Fullscreen button pressed. PlayerView detected: $isEnteringFullscreen")
                     }
                 }
             }
@@ -111,27 +108,7 @@ fun ChannelVideoPlayerCompose(
     // This DisposableEffect is the primary point for player release
     DisposableEffect(Unit) {
         onDispose {
-            // This is the most reliable place to release the player
-            // as it signifies the Composable leaving the composition.
-            // Player.STATE_RELEASED is the most robust check if available,
-            // otherwise, simply releasing is often sufficient as ExoPlayer
-            // handles internal state.
-            try {
-                // If STATE_RELEASED is available, use it:
-                // if (exoPlayer.playbackState != Player.STATE_RELEASED) {
-                //     exoPlayer.release()
-                // }
-                // Otherwise, a simpler direct release:
-                if (exoPlayer.playbackState != Player.STATE_IDLE && exoPlayer.playbackState != Player.STATE_ENDED) {
-                    exoPlayer.release()
-                } else if (exoPlayer.playbackState == Player.STATE_ENDED) {
-                    // Also release if it has ended
-                    exoPlayer.release()
-                }
-
-            } catch (e: Exception) {
-                Log.e("ChannelVideoPlayer", "Error releasing ExoPlayer: $e")
-            }
+             exoPlayer.release()
         }
     }
 }

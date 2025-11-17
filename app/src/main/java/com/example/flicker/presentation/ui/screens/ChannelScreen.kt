@@ -40,7 +40,6 @@ fun ChannelScreen(
 
     // DisposableEffect for managing system UI visibility, screen orientation, and screen-on flag.
     DisposableEffect(shouldBeFullscreen) {
-        // Notify the NavGraph about the current full-screen state
         onSetContentScreenFullscreen(shouldBeFullscreen)
 
         val window = activity?.window
@@ -48,40 +47,24 @@ fun ChannelScreen(
             val insetsController = WindowCompat.getInsetsController(window, window.decorView)
 
             if (shouldBeFullscreen) {
-                // Hide system bars (status bar and navigation bar)
                 insetsController.hide(WindowInsetsCompat.Type.systemBars())
                 insetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-
-                // Force landscape orientation (any sensor-detected landscape, including inverted)
                 activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-
-                // Keep the screen on while content is playing
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             } else {
-                // Show system bars
                 insetsController.show(WindowInsetsCompat.Type.systemBars())
                 insetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
-
-                // Restore portrait orientation (any sensor-detected portrait, including inverted)
-                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
-
-                // Remove the flag to keep the screen on
+                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             }
         }
 
-        // Cleanup block for when the Composable leaves the composition
         onDispose {
-            // Notify NavGraph that ContentScreen is no longer in full-screen (important for BottomNavigationBar)
             onSetContentScreenFullscreen(false)
-
             if (window != null) {
-                // Restore system bars
                 WindowCompat.getInsetsController(window, window.decorView)
                     .show(WindowInsetsCompat.Type.systemBars())
-                // Allow system to decide orientation (unspecified is safest for leaving a screen)
-                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-                // Remove the screen-on flag
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             }
         }
@@ -91,10 +74,8 @@ fun ChannelScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.Black) // Fondo negro para toda la pantalla
-        // No aplicamos paddings aquí, ya que el video siempre llenará el espacio
+            .background(color = Color.Black)
     ) {
-        // Video Player Container
         // El video siempre ocupará el 100% de la pantalla
         ChannelVideoPlayerCompose(
             assetFileName ="tdp_main_dvr.m3u8" ,

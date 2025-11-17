@@ -2,7 +2,7 @@ package com.example.flicker.presentation.viewmodel.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.flicker.domain.usecase.auth.LoginUseCase
+import com.example.flicker.domain.usecase.users.LoginUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -29,13 +29,13 @@ class LoginViewModel(
     fun setUsername(username:String) { this._username.value = username }
     fun setPassword(password:String) { this._password.value = password }
 
-    fun loginWithEmail() {
+    fun login() {
         viewModelScope.launch {
             _loginUiState.value = LoginUiState.Loading
             try {
                 // Simplemente llamamos al caso de uso.
                 // Si tiene éxito, no hace nada. Si falla, lanza una excepción.
-                loginUseCase(email = _username.value, password = _password.value)
+                loginUseCase(identifier = _username.value, password = _password.value)
                 _loginUiState.value = LoginUiState.Success
             } catch (e: Exception) {
                 // Capturamos cualquier excepción del caso de uso (usuario no encontrado, contraseña incorrecta).

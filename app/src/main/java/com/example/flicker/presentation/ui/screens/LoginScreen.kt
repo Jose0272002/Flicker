@@ -1,27 +1,35 @@
 package com.example.flicker.presentation.ui.screens
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -35,38 +43,61 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun LoginScreen(
     navController: NavController,
-    // Koin se encarga de proveer el ViewModel con sus dependencias
     loginViewModel: LoginViewModel = koinViewModel()
 ) {
-    // 1. Recolectamos los estados desde el ViewModel
+    var showExitDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    BackHandler(enabled = true) {
+        showExitDialog = true
+    }
+    if (showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { showExitDialog = false }, // Oculta el diálogo si se pulsa fuera.
+            title = { Text("¿Salir?") },
+            text = { Text("¿Desea cerrar la aplicación?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val activity = (context as? Activity)
+                        activity?.finish()
+                    }
+                ) {
+                    Text("Salir")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showExitDialog = false }
+                ) {
+                    Text("Continuar")
+                }
+            }
+        )
+    }
+
+
     val username by loginViewModel.username.collectAsState()
     val password by loginViewModel.password.collectAsState()
     val loginState by loginViewModel.loginUiState.collectAsState()
 
-    // El botón se activa si ambos campos tienen texto y la contraseña tiene al menos 6 caracteres
     val isButtonEnabled = username.isNotBlank() && password.length >= 6
 
-    // 2. Usamos LaunchedEffect para reaccionar a los cambios de estado del login
-    // Este bloque se ejecutará cada vez que 'loginState' cambie
     LaunchedEffect(key1 = loginState) {
         when (loginState) {
             is LoginUiState.Success -> {
-                // Navegamos a Home y limpiamos el historial para que no se pueda volver
                 navController.navigate(Screen.Home.route) {
                     popUpTo(Screen.Login.route) { inclusive = true }
                     launchSingleTop = true
                 }
             }
-            // Para Loading y Error, la UI se encarga por sí sola
             else -> Unit
         }
     }
 
     Scaffold { paddingValues ->
-        // 3. Mostramos diferentes composables dependiendo del estado
         when (val state = loginState) {
             is LoginUiState.Loading -> {
-                // Estado de carga: mostramos un spinner en el centro
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -77,48 +108,54 @@ fun LoginScreen(
             }
 
             is LoginUiState.Error -> {
-                // Estado de error: mostramos un diálogo con el mensaje del ViewModel
                 AlertDialog(
-                    onDismissRequest = { loginViewModel.resetState() }, // Permite cerrar el diálogo
+                    onDismissRequest = { loginViewModel.resetState() },
                     title = { Text(text = "Error al iniciar sesión") },
-                    text = { Text(state.message) }, // Mensaje de error específico
+                    text = { Text(state.message) },
                     confirmButton = {
                         Button(onClick = { loginViewModel.resetState() }) {
                             Text("Aceptar")
                         }
                     }
                 )
-                // Mostramos el formulario de login detrás del diálogo
                 LoginForm(
                     username = username,
                     password = password,
                     onUsernameChange = { loginViewModel.setUsername(it) },
                     onPasswordChange = { loginViewModel.setPassword(it) },
-                    onLoginClick = { loginViewModel.loginWithEmail() },
+                    onLoginClick = { loginViewModel.login() },
                     isButtonEnabled = isButtonEnabled,
-                    modifier = Modifier.padding(paddingValues)
-                )
+                    modifier = Modifier.padding(paddingValues),
+                    noLoginClick = { navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                        launchSingleTop = true }},
+                    registerClick = { navController.navigate(Screen.Register.route) }
+                ) {
+                    navController.navigate(Screen.Home.route)
+                }
             }
 
-            else -> { // Estado Idle o Success (justo antes de navegar)
-                // Mostramos el formulario de login
+            else -> {
                 LoginForm(
                     username = username,
                     password = password,
                     onUsernameChange = { loginViewModel.setUsername(it) },
                     onPasswordChange = { loginViewModel.setPassword(it) },
-                    onLoginClick = { loginViewModel.loginWithEmail() },
+                    onLoginClick = { loginViewModel.login() },
                     isButtonEnabled = isButtonEnabled,
-                    modifier = Modifier.padding(paddingValues)
-                )
+                    modifier = Modifier.padding(paddingValues),
+                    noLoginClick = { navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                        launchSingleTop = true }},
+                    registerClick = { navController.navigate(Screen.Register.route) }
+                ) {
+                    navController.navigate(Screen.Home.route)
+                }
             }
         }
     }
 }
 
-/**
- * Un Composable separado para el formulario, haciendo el código más limpio.
- */
 @Composable
 fun LoginForm(
     username: String,
@@ -127,22 +164,23 @@ fun LoginForm(
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
     isButtonEnabled: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    noLoginClick: () -> Unit,
+    registerClick: () -> Unit,
+    function: () -> Unit
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp), // Padding a los lados
+            .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(30.dp))
-
         TextField(
             value = username,
             onValueChange = onUsernameChange,
-            label = { Text("Email") }, // Actualizado a Email
-            placeholder = { Text("tu@email.com") },
+            label = { Text("User") },
+            placeholder = { Text("Introduce your username or email") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -151,21 +189,57 @@ fun LoginForm(
         TextField(
             value = password,
             onValueChange = onPasswordChange,
-            label = { Text("Contraseña") },
-            placeholder = { Text("Tu contraseña") },
-            // Oculta el texto de la contraseña
+            label = { Text("Password") },
+            placeholder = { Text("Introduce your password") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.padding(24.dp))
+        Spacer(modifier = Modifier.padding(10.dp))
 
+        Column {
+            Button(
+                onClick = onLoginClick,
+                enabled = isButtonEnabled,
+                shape = MaterialTheme.shapes.extraSmall,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.Blue
+                )
+            ) {
+                Text(
+                    text = "Login",
+                    style = MaterialTheme.typography.headlineMedium
+                )
+            }
+            Button(
+                onClick = registerClick,
+                shape = MaterialTheme.shapes.extraSmall,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.Blue
+                )
+            ) {
+                Text(
+                    text = "Register",
+                    style = MaterialTheme.typography.headlineMedium
+                )
+            }
+        }
+        Spacer(Modifier.padding(20.dp))
         Button(
-            onClick = onLoginClick,
-            enabled = isButtonEnabled
+            onClick = noLoginClick,
+            shape = MaterialTheme.shapes.extraSmall,
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Black,
+                contentColor = Color.Blue
+            )
         ) {
             Text(
-                text = "Login",
+                text = "Continue",
                 style = MaterialTheme.typography.headlineMedium
             )
         }

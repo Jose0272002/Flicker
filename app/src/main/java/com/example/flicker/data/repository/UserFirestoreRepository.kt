@@ -42,7 +42,7 @@ class UserFirestoreRepository(val firestore: FirebaseFirestore): UserRepository 
     override suspend fun getUserByEmail(email: String): User? {
         // Ejecutamos una consulta en la colección 'users' donde el campo 'email' sea igual al proporcionado.
         val querySnapshot = firestore.collection("Users")
-            .whereEqualTo("name", email)
+            .whereEqualTo("email", email)
             .limit(1) // Solo nos interesa el primer resultado
             .get()
             .await() // Esperamos el resultado de forma asíncrona

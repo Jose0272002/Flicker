@@ -1,5 +1,7 @@
 package com.example.flicker.presentation.ui.components
 
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -8,7 +10,9 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.flicker.presentation.navigation.Screen
@@ -18,7 +22,8 @@ fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
         Screen.Home,
         Screen.Search,
-        Screen.Watchlist
+        Screen.Watchlist,
+        Screen.Register
     )
 
     NavigationBar {
@@ -29,6 +34,7 @@ fun BottomNavigationBar(navController: NavController) {
             NavigationBarItem(
                 icon = { Icon(imageVector = item.icon, contentDescription = item.title) },
                 label = { Text(text = item.title) },
+                alwaysShowLabel = false,
                 selected = currentRoute == item.route,
                 onClick = {
                     navController.navigate(item.route) {
@@ -51,6 +57,7 @@ fun BottomNavigationBar(navController: NavController) {
                         MaterialTheme.colorScheme.onSurface
                     },
                 ),
+                modifier = Modifier.height(21.dp)
             )
         }
     }

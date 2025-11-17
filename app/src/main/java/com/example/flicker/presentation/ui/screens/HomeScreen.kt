@@ -1,5 +1,7 @@
 package com.example.flicker.presentation.ui.screens
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
@@ -12,7 +14,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +37,39 @@ fun HomeScreen(
     navController: NavController,
     moviesViewModel: MoviesViewModel= koinViewModel()
 ) {
+    var showExitDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    BackHandler(enabled = true) {
+        showExitDialog = true
+    }
+    if (showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { showExitDialog = false }, // Oculta el diálogo si se pulsa fuera.
+            title = { Text("¿Salir?") },
+            text = { Text("¿Desea cerrar la aplicación?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val activity = (context as? Activity)
+                        activity?.finish()
+                    }
+                ) {
+                    Text("Salir")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showExitDialog = false }
+                ) {
+                    Text("Continuar")
+                }
+            }
+        )
+    }
+
+
+
     val movies by moviesViewModel.movies.collectAsState()
     
     // Obtener categorías únicas de todas las películas
@@ -81,13 +118,14 @@ fun HomeScreen(
                             }
                         }
                     }
-                }
-                
-                Button(
-                    onClick = { navController.navigate(Screen.Channel.route) },
-                    modifier = Modifier.padding(top = 16.dp)
-                ) {
-                    Text("Channel")
+                    item {
+                        Button(
+                            onClick = { navController.navigate(Screen.Channel.route) },
+                            modifier = Modifier.padding(top = 16.dp)
+                        ) {
+                            Text("Channel")
+                        }
+                    }
                 }
             }
         }

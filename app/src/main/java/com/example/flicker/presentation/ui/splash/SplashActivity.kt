@@ -72,7 +72,7 @@ fun SplashScreenWithBlinkingText() {
                     append("FLICK")
                 }
                 withStyle(style = SpanStyle(color = Color(0xFF0D47A1).copy(alpha = alpha))) { // "-er" en azul con el alpha animado
-                    append(" ER")
+                    append("ER")
                 }
             },
             fontSize = 48.sp, // Tamaño de fuente grande
