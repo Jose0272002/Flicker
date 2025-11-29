@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.flicker.domain.model.SessionManager
@@ -57,6 +58,7 @@ fun WatchlistScreen(
         Column {
             Text("Watchlist".uppercase(),
                 style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Black,
                 color = Color.Black,
                 modifier = Modifier
                     .fillMaxWidth()

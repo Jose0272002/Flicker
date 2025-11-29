@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -91,32 +92,14 @@ fun HomeScreen(
                 modifier = Modifier.padding(vertical = 0.dp)
         ) {
             item {
-                Text(
-                    text ="Channels".uppercase(),
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(horizontal = 0.dp)
-                        .fillParentMaxWidth()
-                        .padding(horizontal = 3.dp)
-                        .padding(top = 1.3.dp)
-                        .background(Color(0xFF0D47A1)),
-                    color = Color.Black
-                )
+                Text("Channels")
                 LazyRow {
                     items(channels) { channel ->
                         ChannelCard(channel, navController)
                     }
                 }
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text ="Movies".uppercase(),
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier
-                        .fillParentMaxWidth()
-                        .padding(horizontal = 3.dp)
-                        .padding(top = 1.3.dp)
-                        .background(Color(0xFF0D47A1)),
-                    color = Color.Black
-                )
+                Spacer(modifier = Modifier.height(20.dp))
+
             }
             categories.forEach { category ->
                 val moviesInCategory = movies.filter { movie ->
