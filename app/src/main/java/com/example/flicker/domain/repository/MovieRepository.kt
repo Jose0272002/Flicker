@@ -9,4 +9,5 @@ interface MovieRepository {
     fun list(): Flow<List<Movie>>
     suspend fun save(movie: Movie): Boolean
     suspend fun delete(id: String): Boolean
+    fun getMoviesByIds(movieIds: List<String>): Flow<List<Movie>>
 }

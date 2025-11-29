@@ -1,4 +1,4 @@
-package com.example.flicker.presentation.viewmodel.movies
+package com.example.flicker.presentation.viewmodel.content.movies
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

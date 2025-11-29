@@ -1,0 +1,14 @@
+#EXTM3U
+## Created with Golumi Video Platform
+
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:5
+#EXT-X-MEDIA-SEQUENCE:583271
+#EXTINF:5.0,
+https://rtvelivestream.rtve.es/rtvesec/rne/GL0/2_v_143_2025_11_29_02_10_34_583271.ts
+#EXTINF:5.0,
+https://rtvelivestream.rtve.es/rtvesec/rne/GL0/2_v_143_2025_11_29_02_10_39_583272.ts
+#EXTINF:5.0,
+https://rtvelivestream.rtve.es/rtvesec/rne/GL0/2_v_143_2025_11_29_02_10_44_583273.ts
+#EXTINF:5.0,
+https://rtvelivestream.rtve.es/rtvesec/rne/GL0/2_v_143_2025_11_29_02_10_49_583274.ts

@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
-class UserFirestoreRepository(val firestore: FirebaseFirestore): UserRepository {
+class UserFirestoreRepository(
+    val firestore: FirebaseFirestore
+): UserRepository {
     private val usersCollection = firestore.collection("Users")
 
 
@@ -86,7 +88,13 @@ class UserFirestoreRepository(val firestore: FirebaseFirestore): UserRepository 
         }
     }
 
-
+    override suspend fun updateUserPhoto(userId: String, photoUrl: String) {
+        try {
+            usersCollection.document(userId).update("photoUrl", photoUrl).await()
+        } catch (e: Exception) {
+            throw Exception("No se pudo actualizar la foto de perfil.")
+        }
+    }
 
     // Este método es siempre igual para cualquier repository
     private fun <T> queryForList(query: Query, clazz: Class<T>): Flow<List<T>> {

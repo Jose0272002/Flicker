@@ -1,20 +1,15 @@
 package com.example.flicker.domain.usecase.users
 
+import com.example.flicker.domain.model.User
 import com.example.flicker.domain.repository.UserRepository
 
 class LoginUseCase(
     private val userRepository: UserRepository
 ) {
-    /**
-     * Valida las credenciales del usuario contra Firestore.
-     * @throws Exception si el usuario no se encuentra o la contraseña es incorrecta.
-     */
-    suspend operator fun invoke(identifier: String, password: String) {
+    suspend operator fun invoke(identifier: String, password: String): User {
         if (identifier.isBlank() || password.isBlank()) {
             throw IllegalArgumentException("El correo y la contraseña no pueden estar vacíos.")
         }
-
-        // 1. Verificamos si el identificador es un email o un nombre de usuario y buscamos en Firestore.
         val user = if (android.util.Patterns.EMAIL_ADDRESS.matcher(identifier).matches()) {
             userRepository.getUserByEmail(identifier)
         } else {
@@ -27,5 +22,6 @@ class LoginUseCase(
             throw Exception("La contraseña es incorrecta.")
         }
 
+        return user
     }
 }

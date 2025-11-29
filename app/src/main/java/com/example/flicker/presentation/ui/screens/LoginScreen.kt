@@ -9,16 +9,21 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -30,12 +35,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.flicker.presentation.navigation.Screen
-import com.example.flicker.presentation.viewmodel.login.LoginUiState
-import com.example.flicker.presentation.viewmodel.login.LoginViewModel
+import com.example.flicker.presentation.viewmodel.user.LoginUiState
+import com.example.flicker.presentation.viewmodel.user.LoginViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -95,62 +102,58 @@ fun LoginScreen(
         }
     }
 
-    Scaffold { paddingValues ->
-        when (val state = loginState) {
-            is LoginUiState.Loading -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    CircularProgressIndicator()
-                }
+    when (val state = loginState) {
+        is LoginUiState.Loading -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator()
             }
+        }
 
-            is LoginUiState.Error -> {
-                AlertDialog(
-                    onDismissRequest = { loginViewModel.resetState() },
-                    title = { Text(text = "Error al iniciar sesión") },
-                    text = { Text(state.message) },
-                    confirmButton = {
-                        Button(onClick = { loginViewModel.resetState() }) {
-                            Text("Aceptar")
-                        }
+        is LoginUiState.Error -> {
+            AlertDialog(
+                onDismissRequest = { loginViewModel.resetState() },
+                title = { Text(text = "Error al iniciar sesión") },
+                text = { Text(state.message) },
+                confirmButton = {
+                    Button(onClick = { loginViewModel.resetState() }) {
+                        Text("Aceptar")
                     }
-                )
-                LoginForm(
-                    username = username,
-                    password = password,
-                    onUsernameChange = { loginViewModel.setUsername(it) },
-                    onPasswordChange = { loginViewModel.setPassword(it) },
-                    onLoginClick = { loginViewModel.login() },
-                    isButtonEnabled = isButtonEnabled,
-                    modifier = Modifier.padding(paddingValues),
-                    noLoginClick = { navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
-                        launchSingleTop = true }},
-                    registerClick = { navController.navigate(Screen.Register.route) }
-                ) {
-                    navController.navigate(Screen.Home.route)
                 }
+            )
+            LoginForm(
+                username = username,
+                password = password,
+                onUsernameChange = { loginViewModel.setUsername(it) },
+                onPasswordChange = { loginViewModel.setPassword(it) },
+                onLoginClick = { loginViewModel.login() },
+                isButtonEnabled = isButtonEnabled,
+                noLoginClick = { navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Login.route) { inclusive = true }
+                    launchSingleTop = true }},
+                registerClick = { navController.navigate(Screen.Register.route) }
+            ) {
+                navController.navigate(Screen.Home.route)
             }
+        }
 
-            else -> {
-                LoginForm(
-                    username = username,
-                    password = password,
-                    onUsernameChange = { loginViewModel.setUsername(it) },
-                    onPasswordChange = { loginViewModel.setPassword(it) },
-                    onLoginClick = { loginViewModel.login() },
-                    isButtonEnabled = isButtonEnabled,
-                    modifier = Modifier.padding(paddingValues),
-                    noLoginClick = { navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
-                        launchSingleTop = true }},
-                    registerClick = { navController.navigate(Screen.Register.route) }
-                ) {
-                    navController.navigate(Screen.Home.route)
-                }
+        else -> {
+            LoginForm(
+                username = username,
+                password = password,
+                onUsernameChange = { loginViewModel.setUsername(it) },
+                onPasswordChange = { loginViewModel.setPassword(it) },
+                onLoginClick = { loginViewModel.login() },
+                isButtonEnabled = isButtonEnabled,
+                noLoginClick = { navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Login.route) { inclusive = true }
+                    launchSingleTop = true }},
+                registerClick = { navController.navigate(Screen.Register.route) }
+            ) {
+                navController.navigate(Screen.Home.route)
             }
         }
     }
@@ -176,23 +179,30 @@ fun LoginForm(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TextField(
+        OutlinedTextField(
             value = username,
             onValueChange = onUsernameChange,
             label = { Text("User") },
-            placeholder = { Text("Introduce your username or email") },
-            modifier = Modifier.fillMaxWidth()
+            placeholder = { Text("Username or Email") },
+            leadingIcon = { Icon(Icons.Default.Person, contentDescription = "Contraseña") },
+            modifier = Modifier.fillMaxWidth(),
+            visualTransformation = VisualTransformation.None,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            singleLine = true
         )
 
         Spacer(modifier = Modifier.padding(10.dp))
 
-        TextField(
+        OutlinedTextField(
             value = password,
             onValueChange = onPasswordChange,
             label = { Text("Password") },
             placeholder = { Text("Introduce your password") },
+            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Contraseña") },
+            modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            singleLine = true
         )
 
         Spacer(modifier = Modifier.padding(10.dp))
@@ -204,8 +214,8 @@ fun LoginForm(
                 shape = MaterialTheme.shapes.extraSmall,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Black,
-                    contentColor = Color.Blue
+                    containerColor = Color.DarkGray,
+                    contentColor = Color.White
                 )
             ) {
                 Text(
@@ -213,13 +223,14 @@ fun LoginForm(
                     style = MaterialTheme.typography.headlineMedium
                 )
             }
+            Spacer(modifier = Modifier.padding(3.dp))
             Button(
                 onClick = registerClick,
                 shape = MaterialTheme.shapes.extraSmall,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Black,
-                    contentColor = Color.Blue
+                    containerColor = Color.DarkGray,
+                    contentColor = Color.White
                 )
             ) {
                 Text(
@@ -228,14 +239,14 @@ fun LoginForm(
                 )
             }
         }
-        Spacer(Modifier.padding(20.dp))
+        Spacer(Modifier.padding(16.dp))
         Button(
             onClick = noLoginClick,
             shape = MaterialTheme.shapes.extraSmall,
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Black,
-                contentColor = Color.Blue
+                containerColor = Color.DarkGray,
+                contentColor = Color.White
             )
         ) {
             Text(

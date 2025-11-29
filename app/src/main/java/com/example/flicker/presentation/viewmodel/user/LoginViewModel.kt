@@ -1,7 +1,8 @@
-package com.example.flicker.presentation.viewmodel.login
+package com.example.flicker.presentation.viewmodel.user
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.flicker.domain.model.SessionManager
 import com.example.flicker.domain.usecase.users.LoginUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,6 +17,7 @@ sealed interface LoginUiState {
 }
 
 class LoginViewModel(
+    private val sessionManager: SessionManager,
     private val loginUseCase: LoginUseCase // Koin proveerá esto
 ) : ViewModel() {
     // ... los StateFlows para username, password, y loginUiState son los mismos ...
@@ -33,12 +35,10 @@ class LoginViewModel(
         viewModelScope.launch {
             _loginUiState.value = LoginUiState.Loading
             try {
-                // Simplemente llamamos al caso de uso.
-                // Si tiene éxito, no hace nada. Si falla, lanza una excepción.
-                loginUseCase(identifier = _username.value, password = _password.value)
+                val user = loginUseCase(identifier = _username.value, password = _password.value)
+                sessionManager.login(user) // Guarda el usuario en la sesión
                 _loginUiState.value = LoginUiState.Success
             } catch (e: Exception) {
-                // Capturamos cualquier excepción del caso de uso (usuario no encontrado, contraseña incorrecta).
                 _loginUiState.value = LoginUiState.Error(e.message ?: "Error desconocido")
             }
         }

@@ -20,7 +20,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.flicker.presentation.ui.components.VideoPlayerCompose
 import com.example.flicker.presentation.viewmodel.content.ContentViewModel
-import com.example.flicker.presentation.viewmodel.movies.MoviesViewModel
+import com.example.flicker.presentation.viewmodel.content.movies.MoviesViewModel
 import org.koin.androidx.compose.koinViewModel
 
 fun Context.findActivity(): Activity? = when (this) {
@@ -90,7 +90,7 @@ fun ContentScreen(
                 .background(Color.Black),
             contentAlignment = Alignment.Center
         ) {
-            Text("Película no encontrada", color = Color.White)
+            Text("not found", color = Color.White)
         }
         return
     }

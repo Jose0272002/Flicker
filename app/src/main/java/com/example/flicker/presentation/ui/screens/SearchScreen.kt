@@ -1,64 +1,74 @@
 package com.example.flicker.presentation.ui.screens
 
-import androidx.compose.foundation.background
+import MovieCard
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.flicker.presentation.navigation.Screen
+import com.example.flicker.presentation.viewmodel.search.SearchViewModel
+import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(navController: NavController) {
-    Scaffold(
-        modifier = Modifier.background(color = Color(0xFF000000)),
-        floatingActionButton = {
-            FloatingActionButton(onClick = { /* Acción del FAB */ }) {
-                Icon(imageVector =  Icons.Default.Search, contentDescription = "Search")
-            }
-        },
-        content = { paddingValues ->
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
+fun SearchScreen(
+    navController: NavController,
+    viewModel: SearchViewModel = getViewModel()
+) {
+    val searchText by viewModel.searchText.collectAsState()
+    val searchResults by viewModel.searchResults.collectAsState()
+    val isSearching by viewModel.isSearching.collectAsState()
 
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                Text(
-                    text = "Search",
-                    style = MaterialTheme.typography.headlineMedium
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(
-                    // Al pulsar en el botón abre la ventana de Detalles con el parámetro 123
-                    onClick = { navController.navigate(Screen.Login.route) }
-                ) {
-                    Text("Logout")
-                }
+    Column(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        SearchBar(
+            query = searchText,
+            onQueryChange = viewModel::onSearchTextChange,
+            onSearch = { viewModel.onSearchTextChange(it) },
+            active = isSearching, // El estado de la UI (activo/inactivo) no lo usaremos por ahora
+            onActiveChange = { }, // Dejar vacío
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = if (isSearching) 0.dp else 10.dp),
+            placeholder = { Text("Search movies") },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search icon") }
+        ) {
+            // El contenido dentro de `SearchBar` se muestra cuando `active = true`.
+            // Por ahora, mostraremos los resultados fuera, debajo de la barra.
+        }
+
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(120.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp),
+            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(searchResults) { movie ->
+                MovieCard(movie = movie, navController = navController)
             }
         }
-    )
+    }
 }

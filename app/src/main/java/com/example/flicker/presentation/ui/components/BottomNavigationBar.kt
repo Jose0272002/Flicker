@@ -9,24 +9,55 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.flicker.domain.model.SessionManager
 import com.example.flicker.presentation.navigation.Screen
+import org.koin.compose.koinInject
 
 @Composable
-fun BottomNavigationBar(navController: NavController) {
-    val items = listOf(
+fun BottomNavigationBar(
+    navController: NavController,
+    sessionManager: SessionManager = koinInject()
+) {
+    val currentUser by sessionManager.currentUser.collectAsState()
+    val isLoggedIn = currentUser != null
+
+    val userItems = listOf(
         Screen.Home,
         Screen.Search,
         Screen.Watchlist,
+        Screen.Profile
+    )
+
+    val guestItems = listOf(
+        Screen.Home,
+        Screen.Search,
         Screen.Register
     )
 
-    NavigationBar {
+    // Solo mostrar el perfil si el usuario ha iniciado sesión
+    val items = remember(isLoggedIn) {
+        if (isLoggedIn) {
+            userItems
+        } else {
+            guestItems
+        }
+    }
+
+NavigationBar(
+    modifier = Modifier
+        .wrapContentHeight()
+        .height(72.dp),
+    containerColor = Color.Black,
+    contentColor = Color.Transparent
+) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
 
@@ -56,7 +87,9 @@ fun BottomNavigationBar(navController: NavController) {
                     } else {
                         MaterialTheme.colorScheme.onSurface
                     },
+                    indicatorColor = Color(0x770D47A1)
                 ),
+
                 modifier = Modifier.height(21.dp)
             )
         }

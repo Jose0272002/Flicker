@@ -20,7 +20,7 @@ import androidx.media3.common.Player // Ensure this import is correct
 
 @OptIn(UnstableApi::class)
 @Composable
-fun ChannelVideoPlayerCompose(
+fun ChannelPlayerCompose(
     assetFileName: String,
     modifier: Modifier = Modifier,
     onFullscreenToggle: ((Boolean) -> Unit)? = null // Optional callback

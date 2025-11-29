@@ -57,8 +57,14 @@ dependencies {
     // SplashScreen
     implementation ("androidx.core:core-splashscreen:1.0.1")
     //koin
-    implementation("io.insert-koin:koin-android:3.4.1")
-    implementation("io.insert-koin:koin-androidx-compose:3.4.1")
+    val koinVersion = "3.5.6"
+    implementation(platform("io.insert-koin:koin-bom:$koinVersion"))
+    // Koin for Core
+    implementation("io.insert-koin:koin-core")
+    // Koin for Android
+    implementation("io.insert-koin:koin-android")
+    // Koin for Jetpack Compose
+    implementation("io.insert-koin:koin-androidx-compose")
     //Coil
     implementation("io.coil-kt:coil-compose:2.5.0")
     // Jetpack Media3 - Player (ExoPlayer)
@@ -68,6 +74,8 @@ dependencies {
     implementation ("androidx.media3:media3-ui:1.7.1")
     // Jetpack Media3 - HLS
     implementation ("androidx.media3:media3-exoplayer-hls:1.7.1")
+    // Gson para SharedPreferences
+    implementation("com.google.code.gson:gson:2.10.1")
 
 
     implementation(libs.androidx.core.ktx)

@@ -37,7 +37,7 @@ class SplashActivity : ComponentActivity() {
 
         // Inicia una coroutine para esperar un tiempo y luego navegar a MainActivity
         lifecycleScope.launch {
-            delay(3000)
+            delay(3500)
             // Navega a tu MainActivity
             startActivity(Intent(this@SplashActivity, MainActivity::class.java))
             finish() // Cierra SplashActivity para que el usuario no pueda volver a ella con el botón "Atrás"

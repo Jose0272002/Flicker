@@ -2,11 +2,13 @@ package com.example.flicker.data.repository
 
 import com.example.flicker.domain.model.Movie
 import com.example.flicker.domain.repository.MovieRepository
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.tasks.await
 
 class MovieFirestoreRepository (val firestore: FirebaseFirestore): MovieRepository {
@@ -55,6 +57,26 @@ class MovieFirestoreRepository (val firestore: FirebaseFirestore): MovieReposito
                 false
             }
         }
+    override fun getMoviesByIds(movieIds: List<String>): Flow<List<Movie>> {
+        if (movieIds.isEmpty()) {
+            return flowOf(emptyList())
+        }
+        val query = moviesCollection.whereIn(FieldPath.documentId(), movieIds.take(30))
+
+        return callbackFlow {
+            val listener = query.addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val movies = snapshot?.documents?.mapNotNull { doc ->
+                    doc.toObject(Movie::class.java)
+                } ?: emptyList()
+                trySend(movies)
+            }
+            awaitClose { listener.remove() }
+        }
+    }
 
         // Este método es siempre igual para cualquier repository
         private fun <T> queryForList(query: Query, clazz: Class<T>): Flow<List<T>> {

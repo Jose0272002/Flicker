@@ -1,5 +1,4 @@
-package com.example.flicker.presentation.ui.components // Tu paquete para componentes
-
+package com.example.flicker.presentation.ui.components
 import android.net.Uri
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.fillMaxSize
