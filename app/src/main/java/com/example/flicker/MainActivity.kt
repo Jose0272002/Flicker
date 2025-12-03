@@ -17,9 +17,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FlickerTheme {
-                // Estado para controlar si la pantalla actual (ContentScreen) está en modo pantalla completa
                 var isContentScreenFullscreen by remember { mutableStateOf(false) }
-                // Pasa este estado y su actualizador a NavGraph
                 NavGraph(
                     onSetContentScreenFullscreen = { isFullscreen ->
                         isContentScreenFullscreen = isFullscreen

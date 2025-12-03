@@ -25,16 +25,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.flicker.presentation.viewmodel.search.SearchViewModel
 import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     navController: NavController,
-    viewModel: SearchViewModel = getViewModel()
+    searchViewModel: SearchViewModel= koinViewModel()
 ) {
-    val searchText by viewModel.searchText.collectAsState()
-    val searchResults by viewModel.searchResults.collectAsState()
-    val isSearching by viewModel.isSearching.collectAsState()
+    val searchText by searchViewModel.searchText.collectAsState()
+    val searchResults by searchViewModel.searchResults.collectAsState()
+    val isSearching by searchViewModel.isSearching.collectAsState()
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -43,18 +44,17 @@ fun SearchScreen(
     ) {
         SearchBar(
             query = searchText,
-            onQueryChange = viewModel::onSearchTextChange,
-            onSearch = { viewModel.onSearchTextChange(it) },
-            active = isSearching, // El estado de la UI (activo/inactivo) no lo usaremos por ahora
-            onActiveChange = { }, // Dejar vacío
+            onQueryChange = searchViewModel::onSearchTextChange,
+            onSearch = { searchViewModel.onSearchTextChange(it) },
+            active = isSearching,
+            onActiveChange = { },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = if (isSearching) 0.dp else 10.dp),
             placeholder = { Text("Search movies") },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search icon") }
         ) {
-            // El contenido dentro de `SearchBar` se muestra cuando `active = true`.
-            // Por ahora, mostraremos los resultados fuera, debajo de la barra.
+
         }
 
         LazyVerticalGrid(

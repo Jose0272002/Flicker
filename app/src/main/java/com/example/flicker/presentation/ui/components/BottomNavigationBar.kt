@@ -39,7 +39,8 @@ fun BottomNavigationBar(
     val guestItems = listOf(
         Screen.Home,
         Screen.Search,
-        Screen.Register
+        Screen.Register,
+        Screen.Login
     )
 
     // Solo mostrar el perfil si el usuario ha iniciado sesión
