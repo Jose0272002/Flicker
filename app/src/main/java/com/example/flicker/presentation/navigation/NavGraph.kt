@@ -46,6 +46,7 @@ import com.example.flicker.presentation.ui.screens.SearchScreen
 import com.example.flicker.presentation.ui.screens.WatchlistScreen
 import com.example.flicker.presentation.ui.screens.availableIcons
 import com.example.flicker.presentation.ui.screens.findActivity
+import org.koin.androidx.compose.getViewModel
 import org.koin.compose.koinInject
 
 
@@ -82,7 +83,7 @@ fun NavGraph(
                                 contentDescription = "Avatar de perfil",
                                 modifier = Modifier
                                     .background(Color.DarkGray, CircleShape)
-                                    .padding( 5.dp)
+                                    .padding(5.dp)
                                     .size(30.dp)
                                     .clip(CircleShape)
                                     .clickable { navController.navigate(Screen.Profile.route) },
@@ -121,7 +122,8 @@ fun NavGraph(
         NavHost(
             navController = navController,
             startDestination = startDestination,
-            modifier = Modifier.padding(screenPadding)
+            modifier = Modifier
+                .padding(screenPadding)
                 .background(Color.Black)
         ) {
             composable(Screen.Home.route) {
@@ -164,13 +166,18 @@ fun NavGraph(
             }
             composable(
                 route = "${Screen.Channel.route}/{channelId}",
-                arguments = listOf(navArgument("channelId") { type = NavType.StringType })
+                arguments = listOf(
+                    navArgument("channelId") { type = NavType.StringType }
+                )
             ) { backStackEntry ->
                 val channelId = backStackEntry.arguments?.getString("channelId") ?: ""
+
                 ChannelScreen (
                     channelId = channelId,
                     navController = navController,
-                    channelsViewModel = koinInject(),
+                    channelsViewModel = getViewModel(),
+                    // Pasamos 'true' directamente. Un canal siempre empieza en pantalla completa.
+                    initialFullscreenState = true,
                     onSetContentScreenFullscreen = onSetContentScreenFullscreen
                 )
             }

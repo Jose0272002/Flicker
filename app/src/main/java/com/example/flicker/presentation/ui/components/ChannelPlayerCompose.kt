@@ -1,100 +1,83 @@
 package com.example.flicker.presentation.ui.components
 
-import android.content.res.AssetFileDescriptor
+import android.util.Log
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.PlayerView
 import androidx.media3.ui.AspectRatioFrameLayout
-import android.util.Log // Use android.util.Log for Logcat visibility
-import androidx.core.net.toUri
-import androidx.media3.common.Player // Ensure this import is correct
+import androidx.media3.ui.PlayerView
 
 @OptIn(UnstableApi::class)
 @Composable
 fun ChannelPlayerCompose(
     assetFileName: String,
     modifier: Modifier = Modifier,
-    onFullscreenToggle: ((Boolean) -> Unit)? = null // Optional callback
+    onFullscreenToggle: ((Boolean) -> Unit)? = null,
+    onNextClicked: () -> Unit,
+    onPreviousClicked: () -> Unit
 ) {
     val context = LocalContext.current
 
-    val exoPlayer = remember {
+    // Crea un nuevo ExoPlayer cada vez que el `assetFileName` (el canal) cambia.
+    val exoPlayer = remember(assetFileName) {
         ExoPlayer.Builder(context).build().apply {
-            val assetUri = "file:///android_asset/" + assetFileName
-            val mediaItem = try {
-                MediaItem.fromUri(assetUri.toUri())
-            } catch (e: Exception) {
-                Log.e("ChannelVideoPlayer", "Error parsing raw resource URI: $e. URI was: $assetUri")
-                MediaItem.EMPTY // Provide a fallback
-            }
-
-            if (mediaItem != MediaItem.EMPTY) {
+            val assetUri = "file:///android_asset/$assetFileName"
+            try {
+                val mediaItem = MediaItem.fromUri(assetUri.toUri())
                 setMediaItem(mediaItem)
-                prepare()
-                playWhenReady = true
-                repeatMode = ExoPlayer.REPEAT_MODE_OFF // Good for live streams
-
-                // --- ADD PLAYER LISTENER HERE FOR DEBUGGING ---
-                addListener(object : Player.Listener {
-                    override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
-                        super.onPlayerError(error)
-                        Log.e("ExoPlayerError", "Player error for raw resource: ${error.message}", error)
-                        // Log more details if available:
-                        if (error.errorCode == Player.EVENT_PLAYER_ERROR) { // Use Player.ERROR_CODE_IO_UNSPECIFIED
-                            Log.e("ExoPlayerError", "IO Error cause: ${error.cause?.message}")
-                        }
-                    }
-
-                    override fun onPlaybackStateChanged(playbackState: Int) {
-                        super.onPlaybackStateChanged(playbackState)
-                        val stateString = when (playbackState) {
-                            Player.STATE_IDLE -> "IDLE"
-                            Player.STATE_BUFFERING -> "BUFFERING"
-                            Player.STATE_READY -> "READY"
-                            Player.STATE_ENDED -> "ENDED"
-                            else -> "UNKNOWN"
-                        }
-                        Log.d("ExoPlayerState", "Playback State: $stateString for raw resource")
-                    }
-                })
+                Log.i("ChannelPlayerCompose", "MediaItem cargado para: $assetFileName")
+            } catch (e: Exception) {
+                Log.e("ChannelPlayerCompose", "Error creando MediaItem para: $assetUri", e)
             }
         }
     }
 
-    // This DisposableEffect handles initial player setup (prepare, playWhenReady).
-    // Its onDispose is now removed as the main release is in DisposableEffect(Unit).
-    DisposableEffect(exoPlayer) {
-        // Ensure player starts if it's idle (e.g., if re-entering screen)
-        if (exoPlayer.playbackState == Player.STATE_IDLE) { // Use Player.STATE_IDLE
-            exoPlayer.prepare()
-        }
-        exoPlayer.playWhenReady = true
-        onDispose {}
+    // Crea nuestro interceptor (ForwardingPlayer) cada vez que el exoPlayer se recrea.
+    val forwardingPlayer = remember(exoPlayer) {
+        NavigationForwardingPlayer(
+            player = exoPlayer,
+            onNext = onNextClicked,
+            onPrevious = onPreviousClicked
+        )
     }
 
+    DisposableEffect(exoPlayer) {
+        exoPlayer.prepare()
+        exoPlayer.playWhenReady = true
+
+        // LIMPIEZA: Cuando el efecto se va (porque el canal cambió),
+        // liberamos los recursos del reproductor antiguo.
+        onDispose {
+            exoPlayer.release()
+            Log.d("ChannelPlayerCompose", "ExoPlayer liberado para el canal anterior.")
+        }
+    }
+
+    // El AndroidView que muestra el reproductor.
     AndroidView(
+        modifier = modifier.fillMaxSize(),
         factory = { ctx ->
+            // Se ejecuta solo una vez para crear la vista
             PlayerView(ctx).apply {
-                player = exoPlayer
+                this.player = forwardingPlayer // Asigna nuestro interceptor
                 resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-                setShowNextButton(false)
-                setShowPreviousButton(false)
+                setShowNextButton(true)
+                setShowPreviousButton(true)
                 setShowFastForwardButton(true)
                 setShowRewindButton(true)
                 setFullscreenButtonState(true)
                 useController = true
                 controllerHideOnTouch = true
-                controllerShowTimeoutMs = 5000
-
                 onFullscreenToggle?.let { listener ->
                     setFullscreenButtonClickListener { isEnteringFullscreen ->
                         listener(isEnteringFullscreen)
@@ -102,13 +85,10 @@ fun ChannelPlayerCompose(
                 }
             }
         },
-        modifier = modifier.fillMaxSize()
-    )
-
-    // This DisposableEffect is the primary point for player release
-    DisposableEffect(Unit) {
-        onDispose {
-             exoPlayer.release()
+        update = { view ->
+            // Se ejecuta cada vez que hay una recomposición para asegurar
+            // que la vista siempre tenga la última instancia del reproductor.
+            view.player = forwardingPlayer
         }
-    }
+    )
 }

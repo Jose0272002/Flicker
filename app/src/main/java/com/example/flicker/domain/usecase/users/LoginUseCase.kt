@@ -13,7 +13,7 @@ class LoginUseCase(
         val user = if (android.util.Patterns.EMAIL_ADDRESS.matcher(identifier).matches()) {
             userRepository.getUserByEmail(identifier)
         } else {
-            userRepository.getUserByName(identifier)
+            userRepository.getUserByUserName(identifier)
         }
             ?: throw Exception("No se encontró ningún usuario con ese correo o nombre de usuario.") // Error si el usuario es nulo
 

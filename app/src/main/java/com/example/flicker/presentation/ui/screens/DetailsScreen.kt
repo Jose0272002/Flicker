@@ -11,11 +11,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Bookmark
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.BookmarkBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,17 +45,20 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.flicker.presentation.navigation.Screen
 import com.example.flicker.presentation.viewmodel.content.movies.MoviesViewModel
+import com.example.flicker.presentation.viewmodel.watchlist.WatchlistViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun DetailsScreen (
     movieId: String,
     moviesViewModel: MoviesViewModel = koinViewModel(),
+    watchlistViewModel: WatchlistViewModel = koinViewModel(),
     navController: NavController
 ) {
     val movies by moviesViewModel.movies.collectAsState()
     val movie = remember(movies, movieId) {
         movies.find { it.id == movieId }
+
     }
 
     if (movie == null) {
@@ -58,7 +70,7 @@ fun DetailsScreen (
         // IMAGEN DE FONDO
         AsyncImage(
             model = movie.image,
-            contentDescription = "Fondo de la película",
+            contentDescription = "Movie Image",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
@@ -99,14 +111,45 @@ fun DetailsScreen (
                 shape = MaterialTheme.shapes.medium,
 
             ) {
+                Text("Play")
                 Icon(Icons.Default.PlayArrow, contentDescription = "Reproducir")
-                Text("Reproducir")
+
             }
-            Text(movie.name.first().uppercase() + movie.name.substring(1),
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Black,
-                color = Color.White
-            )
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ){
+                Text(movie.name.first().uppercase() + movie.name.substring(1),
+                    fontSize = 30.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                    fontWeight = FontWeight.Black,
+                    color = Color.White
+                )
+
+                // Obtener el estado de la watchlist para esta película
+                val watchlistIds by watchlistViewModel.watchlistIds.collectAsState()
+                val isInWatchlist = remember(watchlistIds, movie.id) {
+                    watchlistIds.contains(movie.id)
+                }
+                IconToggleButton(
+                    checked = isInWatchlist,
+                    onCheckedChange = { watchlistViewModel.toggleWatchlist(movie.id) }
+                ) {
+                    Icon(
+                        imageVector = if (isInWatchlist) Icons.Filled.Check else Icons.Rounded.Add,
+                        contentDescription = "add to Watchlist",
+                        tint = Color.White,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+
+            }
+
+
+
+
             Spacer(modifier = Modifier.height(1.dp))
             Row {
                 for (category in movie.category) {

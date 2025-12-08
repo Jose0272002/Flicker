@@ -115,8 +115,8 @@ fun RegisterScreen(
             shape = MaterialTheme.shapes.extraSmall,
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Black,
-                contentColor = Color.White
+                containerColor = Color.White,
+                contentColor = Color.Black
             )
         ) {
             Text("Register")

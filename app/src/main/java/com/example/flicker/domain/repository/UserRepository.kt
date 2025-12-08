@@ -9,7 +9,7 @@ interface UserRepository {
     suspend fun save(user: User): Boolean
     suspend fun delete(id: String): Boolean
     suspend fun getUserByEmail(email: String): User?
-    suspend fun getUserByName(name: String): User?
+    suspend fun getUserByUserName(username: String): User?
     suspend fun updateUserPhoto(userId: String, photoUrl: String) // El nombre puede ser photoUrl o drawableName
 
 }

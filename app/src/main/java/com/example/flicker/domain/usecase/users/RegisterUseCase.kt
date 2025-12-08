@@ -19,7 +19,7 @@ class RegisterUseCase(
             throw Exception("El email '${user.email}' ya está registrado.")
         }
         // Comprobar si ya existe un usuario con ese nombre de usuario
-        val existsByUsername = userRepository.getUserByName(user.username)
+        val existsByUsername = userRepository.getUserByUserName(user.username)
         if (existsByUsername != null) {
             throw Exception("El nombre de usuario '${user.username}' ya está en uso.")
         }
