@@ -64,8 +64,6 @@ fun DetailsScreen (
     if (movie == null) {
         return
     }
-
-
     Box(modifier = Modifier.fillMaxSize()) {
         // IMAGEN DE FONDO
         AsyncImage(
@@ -128,7 +126,7 @@ fun DetailsScreen (
                     color = Color.White
                 )
 
-                // Obtener el estado de la watchlist para esta película
+                // Obtener si la película está en la watchlist
                 val watchlistIds by watchlistViewModel.watchlistIds.collectAsState()
                 val isInWatchlist = remember(watchlistIds, movie.id) {
                     watchlistIds.contains(movie.id)
@@ -146,9 +144,6 @@ fun DetailsScreen (
                 }
 
             }
-
-
-
 
             Spacer(modifier = Modifier.height(1.dp))
             Row {
@@ -174,9 +169,6 @@ fun DetailsScreen (
             Spacer(Modifier.height(10.dp))
             Text("Year: "+movie.year.toString(), color = Color.LightGray)
             Spacer(modifier = Modifier.height(5.dp))
-
-
-
             Text("Director: "+movie.director, color = Color.LightGray)
             Spacer(modifier = Modifier.height(5.dp))
             Text("Description: "+movie.description, color = Color.LightGray, maxLines = 5, overflow = TextOverflow.Ellipsis)
