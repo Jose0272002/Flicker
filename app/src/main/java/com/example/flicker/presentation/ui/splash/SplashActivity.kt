@@ -2,6 +2,7 @@ package com.example.flicker.presentation.ui.splash
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.core.*
@@ -13,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -20,6 +22,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
 import com.example.flicker.MainActivity
+import com.example.flicker.presentation.ui.screens.findActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.example.flicker.ui.theme.FlickerTheme
@@ -38,7 +41,7 @@ class SplashActivity : ComponentActivity() {
         // Inicia una coroutine para esperar un tiempo y luego navegar a MainActivity
         lifecycleScope.launch {
             delay(3500)
-            // Navega a tu MainActivity
+            // Navega a MainActivity
             startActivity(Intent(this@SplashActivity, MainActivity::class.java))
             finish() // Cierra SplashActivity para que el usuario no pueda volver a ella con el botón "Atrás"
         }

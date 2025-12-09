@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -27,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -61,6 +63,24 @@ fun NavGraph(
     val navController = rememberNavController()
     val user by sessionManager.currentUser.collectAsState()
     val isUserLoggedIn = user != null
+    val activity = LocalContext.current.findActivity()
+    DisposableEffect(navController) {
+        val listener = NavController.OnDestinationChangedListener { controller, destination, _ ->
+            // Define las rutas que SÍ pueden rotar a horizontal.
+            val canRotate = destination.route?.startsWith(Screen.Content.route) == true ||
+                    destination.route?.startsWith(Screen.Channel.route) == true
+
+            // Si la nueva pantalla NO puede rotar, se pone en vertical.
+            if (!canRotate) {
+                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+            }
+        }
+        navController.addOnDestinationChangedListener(listener)
+        // Cuando el NavGraph se va, limpiamos el listener.
+        onDispose {
+            navController.removeOnDestinationChangedListener(listener)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -102,12 +122,6 @@ fun NavGraph(
             val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
             if (!isContentScreenFullscreen && currentRoute != Screen.Login.route) {
                 BottomNavigationBar(navController)
-            }
-            val activity = LocalContext.current.findActivity()
-            val window = activity?.window
-            if (!isContentScreenFullscreen) {
-               activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
-                window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             }
         }
     ) { screenPadding ->

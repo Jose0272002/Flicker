@@ -76,6 +76,7 @@ fun ChannelScreen(
             }
         }
 
+
         onDispose {
             val isNavigatingToAnotherChannel = currentRoute?.destination?.route?.startsWith(Screen.Channel.route) == true
 
@@ -84,7 +85,7 @@ fun ChannelScreen(
                 if (activity?.isFinishing == false && window != null) {
                     WindowCompat.getInsetsController(window, window.decorView)
                         .show(WindowInsetsCompat.Type.systemBars())
-                    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                     window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 }
             }
