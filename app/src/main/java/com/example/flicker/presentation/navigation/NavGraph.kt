@@ -76,7 +76,7 @@ fun NavGraph(
             }
         }
         navController.addOnDestinationChangedListener(listener)
-        // Cuando el NavGraph se va, limpiamos el listener.
+        // Cuando el NavGraph se va, se quita el listener.
         onDispose {
             navController.removeOnDestinationChangedListener(listener)
         }
