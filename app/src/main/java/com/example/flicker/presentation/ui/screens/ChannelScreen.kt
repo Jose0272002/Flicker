@@ -111,7 +111,9 @@ fun ChannelScreen(
             .background(color = Color.Black)
     ) {
         ChannelPlayerCompose(
-            assetFileName = channel.link  ,
+            localLink = channel.link,
+            tvLinks = channel.linkTV,
+            channelName = channel.name,
             modifier = Modifier.fillMaxSize(),
             onFullscreenToggle = { isFullscreen ->
                 contentViewModel.setFullscreenState(isFullscreen)

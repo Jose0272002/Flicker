@@ -1,1 +1,5 @@
+.idea/
+.kotlin/
 /build
+*.iml
+local.properties

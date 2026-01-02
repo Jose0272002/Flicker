@@ -34,7 +34,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 val availableIcons = mapOf(
-    "Face" to Icons.Filled.Anchor,
+    "Anchor" to Icons.Filled.Anchor,
     "AccountCircle" to Icons.Default.AccountCircle,
     "Star" to Icons.Default.Star,
     "RocketLaunch" to Icons.Default.RocketLaunch,

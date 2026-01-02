@@ -24,7 +24,7 @@ class ProfileViewModel(
     private val _updateState = MutableStateFlow<ProfileUpdateState>(ProfileUpdateState.Idle)
     val updateState = _updateState.asStateFlow()
 
-    // Función para cambiar el avatar del usuario
+    // Cambiar el avatar del usuario
     fun updateProfilePicture(drawableName: String) {
         val currentUser = sessionManager.getCurrentUserValue() ?: return
 

@@ -33,7 +33,7 @@ class SplashActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            FlickerTheme { // Usa el tema de tu aplicación definido en Compose
+            FlickerTheme { // Usa el tema de la aplicación definido en Compose
                 SplashScreenWithBlinkingText()
             }
         }
@@ -65,10 +65,10 @@ fun SplashScreenWithBlinkingText() {
     Box(
         modifier = Modifier
             .fillMaxSize() // Ocupa toda la pantalla
-            .background(Color(0xFF000000)), // Fondo negro, como Netflix
-        contentAlignment = Alignment.Center // Centra el contenido (el texto)
+            .background(Color(0xFF000000)),
+        contentAlignment = Alignment.Center
     ) {
-        // Usa AnnotatedString para aplicar diferentes estilos a partes del texto
+        // AnnotatedString para aplicar diferentes estilos a partes del texto
         Text(
             text = buildAnnotatedString {
                 withStyle(style = SpanStyle(color = Color(0xFF0D47A1))) { // "Flick" en azul
@@ -78,8 +78,8 @@ fun SplashScreenWithBlinkingText() {
                     append("ER")
                 }
             },
-            fontSize = 48.sp, // Tamaño de fuente grande
-            fontWeight = FontWeight.Bold // Negrita
+            fontSize = 50.sp,
+            fontWeight = FontWeight.Bold
         )
     }
 }

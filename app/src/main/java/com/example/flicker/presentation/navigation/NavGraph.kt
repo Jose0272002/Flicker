@@ -2,9 +2,9 @@ package com.example.flicker.presentation.nav
 import RegisterScreen
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
-import android.view.WindowManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,7 +27,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -38,6 +41,7 @@ import androidx.navigation.navArgument
 import com.example.flicker.domain.model.SessionManager
 import com.example.flicker.presentation.navigation.Screen
 import com.example.flicker.presentation.ui.components.BottomNavigationBar
+import com.example.flicker.presentation.ui.components.CastButton
 import com.example.flicker.presentation.ui.screens.ChannelScreen
 import com.example.flicker.presentation.ui.screens.ContentScreen
 import com.example.flicker.presentation.ui.screens.DetailsScreen
@@ -48,6 +52,7 @@ import com.example.flicker.presentation.ui.screens.SearchScreen
 import com.example.flicker.presentation.ui.screens.WatchlistScreen
 import com.example.flicker.presentation.ui.screens.availableIcons
 import com.example.flicker.presentation.ui.screens.findActivity
+import com.google.android.gms.cast.framework.CastButtonFactory
 import org.koin.androidx.compose.getViewModel
 import org.koin.compose.koinInject
 
@@ -91,24 +96,28 @@ fun NavGraph(
                         "FLICKER",
                         Modifier
                             .fillMaxWidth()
-                            .wrapContentSize(Alignment.Center)
+                            .wrapContentSize(Alignment.Center),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 26.sp,
+
                         )
                             },
                     actions = {
-                        // Muestra el icono de perfil si el usuario ha iniciado sesión
-                        if (isUserLoggedIn) {
-                            val iconVector = availableIcons[user?.photoUrl] ?: Icons.Default.AccountCircle
-                            Icon(
-                                imageVector = iconVector,
-                                contentDescription = "Avatar de perfil",
-                                modifier = Modifier
-                                    .background(Color.DarkGray, CircleShape)
-                                    .padding(5.dp)
-                                    .size(30.dp)
-                                    .clip(CircleShape)
-                                    .clickable { navController.navigate(Screen.Profile.route) },
-                                tint = Color.White // O el color que prefieras para la TopAppBar
-                            )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            if (isUserLoggedIn) {
+                                val iconVector = availableIcons[user?.photoUrl] ?: Icons.Default.AccountCircle
+                                Icon(
+                                    imageVector = iconVector,
+                                    contentDescription = "Avatar de perfil",
+                                    modifier = Modifier
+                                        .background(Color.DarkGray, CircleShape)
+                                        .padding(5.dp)
+                                        .size(30.dp)
+                                        .clip(CircleShape)
+                                        .clickable { navController.navigate(Screen.Profile.route) },
+                                    tint = Color.White
+                                )
+                            }
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -192,6 +201,16 @@ fun NavGraph(
                     channelsViewModel = getViewModel(),
                     // Pasamos 'true' directamente. Un canal siempre empieza en pantalla completa.
                     initialFullscreenState = true,
+                    onSetContentScreenFullscreen = onSetContentScreenFullscreen
+                )
+            }
+            composable(
+                route = "${Screen.Video.route}/{movieId}",
+                arguments = listOf(navArgument("movieId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val movieId = backStackEntry.arguments?.getString("movieId") ?: ""
+                ContentScreen(
+                    movieId = movieId,
                     onSetContentScreenFullscreen = onSetContentScreenFullscreen
                 )
             }

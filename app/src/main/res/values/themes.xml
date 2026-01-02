@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Flicker" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Cambia el padre a Theme.AppCompat o asegúrate de definir los colores -->
+    <style name="Theme.Flicker" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Define un color primario sólido (sin transparencia) -->
+        <item name="colorPrimary">#0D47A1</item>
+        <item name="colorPrimaryDark">#002171</item>
+        <item name="colorAccent">#2979FF</item>
+
+        <!-- Asegúrate de que el fondo de la ventana no sea transparente -->
+        <item name="android:windowBackground">#000000</item>
+    </style>
+
     <style name="Theme.Flicker.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
         <item name="postSplashScreenTheme">@style/Theme.Flicker</item>

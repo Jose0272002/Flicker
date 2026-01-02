@@ -5,6 +5,7 @@ import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -61,8 +62,8 @@ fun LoginScreen(
     if (showExitDialog) {
         AlertDialog(
             onDismissRequest = { showExitDialog = false }, // Oculta el diálogo si se pulsa fuera.
-            title = { Text("¿Salir?") },
-            text = { Text("¿Desea cerrar la aplicación?") },
+            title = { Text("Exit App") },
+            text = { Text("Are you sure you want to exit the app?") },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -70,14 +71,14 @@ fun LoginScreen(
                         activity?.finish()
                     }
                 ) {
-                    Text("Salir")
+                    Text("Exit")
                 }
             },
             dismissButton = {
                 TextButton(
                     onClick = { showExitDialog = false }
                 ) {
-                    Text("Continuar")
+                    Text("Continue")
                 }
             }
         )
@@ -175,10 +176,18 @@ fun LoginForm(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 100.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(
+            text = "Sign In",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 16.dp),
+            color = Color.White
+        )
+
         OutlinedTextField(
             value = username,
             onValueChange = onUsernameChange,
@@ -207,50 +216,59 @@ fun LoginForm(
 
         Spacer(modifier = Modifier.padding(10.dp))
 
+
+
         Column {
-            Button(
-                onClick = onLoginClick,
-                enabled = isButtonEnabled,
-                shape = MaterialTheme.shapes.extraSmall,
+
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.DarkGray,
-                    contentColor = Color.White
-                )
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = "Login",
-                    style = MaterialTheme.typography.headlineMedium
-                )
+                Button(
+                    onClick = onLoginClick,
+                    enabled = isButtonEnabled,
+                    shape = MaterialTheme.shapes.medium,
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text(
+                        text = "Login",
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                }
+                Spacer(modifier = Modifier.padding(3.dp))
+                Button(
+                    onClick = registerClick,
+                    shape = MaterialTheme.shapes.medium,
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text(
+                        text = "Register",
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                }
             }
-            Spacer(modifier = Modifier.padding(3.dp))
-            Button(
-                onClick = registerClick,
-                shape = MaterialTheme.shapes.extraSmall,
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.DarkGray,
-                    contentColor = Color.White
-                )
-            ) {
-                Text(
-                    text = "Register",
-                    style = MaterialTheme.typography.headlineMedium
-                )
             }
-        }
+
         Spacer(Modifier.padding(16.dp))
         Button(
             onClick = noLoginClick,
-            shape = MaterialTheme.shapes.extraSmall,
+            shape = MaterialTheme.shapes.medium,
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.DarkGray,
-                contentColor = Color.White
+                containerColor = Color.White,
+                contentColor = Color.Black
             )
         ) {
             Text(
-                text = "Continue",
+                text = "Later",
                 style = MaterialTheme.typography.headlineMedium
             )
         }

@@ -25,4 +25,7 @@ sealed class Screen(var title: String, var icon: ImageVector, val route: String)
     object Channel : Screen("Channel", Icons.Default.CameraRoll, "channel_screen"){
         fun createRoute(channelId: String) = "channel_screen/$channelId"
     }
+    object Video : Screen("Video", Icons.Default.CameraRoll, "video_screen/{movieId}") {
+        fun createRoute(movieId: String) = "video_screen/$movieId"
+    }
 }

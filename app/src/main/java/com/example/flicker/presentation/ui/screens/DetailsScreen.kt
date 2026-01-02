@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Bookmark
@@ -138,7 +140,7 @@ fun DetailsScreen (
                     Icon(
                         imageVector = if (isInWatchlist) Icons.Filled.Check else Icons.Rounded.Add,
                         contentDescription = "add to Watchlist",
-                        tint = Color.White,
+                        tint = if (isInWatchlist) Color(0xFF0D47A1) else Color.White,
                         modifier = Modifier.size(32.dp)
                     )
                 }
@@ -146,21 +148,25 @@ fun DetailsScreen (
             }
 
             Spacer(modifier = Modifier.height(1.dp))
-            Row {
-                for (category in movie.category) {
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                items(movie.category) { category ->
                     Button(
-                        modifier = Modifier.border(8.dp, Color.Black),
-                        shape = MaterialTheme.shapes.medium,
+                        shape = MaterialTheme.shapes.extraSmall,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF0D47A1),
                             contentColor = Color.Black
                         ),
-                        onClick = { /* Acción al hacer clic */ },
+                        modifier = Modifier.border(8.dp, Color.Black, MaterialTheme.shapes.extraSmall),
+                        onClick = {  },
                     ) {
-                        Text(category,
+                        Text(
+                            category,
                             color = Color.Black,
-                            maxLines = 2,
-                            overflow = TextOverflow.Clip
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }

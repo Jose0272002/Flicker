@@ -18,19 +18,14 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.flicker.presentation.ui.components.VideoPlayerCompose
+// Importa el reproductor web
+import com.example.flicker.presentation.ui.components.WebVideoPlayer
 import com.example.flicker.presentation.viewmodel.content.ContentViewModel
 import com.example.flicker.presentation.viewmodel.content.movies.MoviesViewModel
 import org.koin.androidx.compose.koinViewModel
 
-fun Context.findActivity(): Activity? = when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext.findActivity()
-    else -> null
-}
-
 @Composable
-fun ContentScreen(
+fun VideoScreen(
     movieId: String, // Recibir el ID de la película como parámetro de navegación
     moviesViewModel: MoviesViewModel = koinViewModel(),
     contentViewModel: ContentViewModel = viewModel(),
@@ -49,7 +44,9 @@ fun ContentScreen(
 
     val configuration = LocalConfiguration.current
     val currentOrientation = configuration.orientation
-    val shouldBeFullscreen = isFullscreenByButton || currentOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    // La pantalla completa ahora solo se activa por la orientación,
+    // ya que el botón está dentro del reproductor web.
+    val shouldBeFullscreen = currentOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
     DisposableEffect(shouldBeFullscreen) {
         onSetContentScreenFullscreen(shouldBeFullscreen)
@@ -61,6 +58,7 @@ fun ContentScreen(
             if (shouldBeFullscreen) {
                 insetsController.hide(WindowInsetsCompat.Type.systemBars())
                 insetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                // Mantenemos la lógica de rotación y de mantener la pantalla encendida
                 activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             } else {
@@ -94,18 +92,17 @@ fun ContentScreen(
         return
     }
 
-    // Mostrar el reproductor de video
+    // --- CAMBIO PRINCIPAL AQUÍ ---
+    // Mostrar el reproductor de video web
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.Black)
     ) {
-        VideoPlayerCompose(
-            videoUrl = movie.link, // Usar la URL de la película encontrada
-            modifier = Modifier.fillMaxSize(),
-            onFullscreenToggle = { isFullscreen ->
-                contentViewModel.setFullscreenState(isFullscreen)
-            }
+        // Usamos el nuevo WebVideoPlayer en lugar de VideoPlayerCompose
+        WebVideoPlayer(
+            videoUrl = "https://atres-live.atresmedia.com/828ea1bb0f5f0b65dd724bdbf4ce4719113a44a9_ES_1765664472_1765693212/hlsts/live/neox_usp/neox_usp.isml/neox_usp-audio_spa=128000-video=2700000.m3u8", // Usar la URL de la película encontrada
+            modifier = Modifier.fillMaxSize()
         )
     }
 }

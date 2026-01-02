@@ -18,7 +18,7 @@ sealed interface LoginUiState {
 
 class LoginViewModel(
     private val sessionManager: SessionManager,
-    private val loginUseCase: LoginUseCase // Koin proveerá esto
+    private val loginUseCase: LoginUseCase
 ) : ViewModel() {
     // ... los StateFlows para username, password, y loginUiState son los mismos ...
     private val _username = MutableStateFlow("")

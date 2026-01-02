@@ -74,6 +74,10 @@ dependencies {
     implementation ("androidx.media3:media3-ui:1.7.1")
     // Jetpack Media3 - HLS
     implementation ("androidx.media3:media3-exoplayer-hls:1.7.1")
+    // Integración de ExoPlayer con Cast
+    implementation("androidx.media3:media3-cast:1.3.1")
+    implementation("com.google.android.gms:play-services-cast-framework:21.5.0")
+
     // Gson para SharedPreferences
     implementation("com.google.code.gson:gson:2.10.1")
 

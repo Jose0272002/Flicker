@@ -48,8 +48,8 @@ fun HomeScreen(
     if (showExitDialog) {
         AlertDialog(
             onDismissRequest = { showExitDialog = false }, // Oculta el diálogo si se pulsa fuera.
-            title = { Text("¿Salir?") },
-            text = { Text("¿Desea cerrar la aplicación?") },
+            title = { Text("Exit App") },
+            text = { Text("Are you sure you want to exit the app?") },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -57,14 +57,14 @@ fun HomeScreen(
                         activity?.finish()
                     }
                 ) {
-                    Text("Salir")
+                    Text("Exit")
                 }
             },
             dismissButton = {
                 TextButton(
                     onClick = { showExitDialog = false }
                 ) {
-                    Text("Continuar")
+                    Text("Continue")
                 }
             }
         )

@@ -10,12 +10,15 @@ data class Channel(
     @JvmField
     val link: String,
     @JvmField
+    val linkTV: List<String>,
+    @JvmField
     val image: String
 ){
     constructor(): this(
         "",
         "",
         "",
+        emptyList(),
         ""
     )
 }
