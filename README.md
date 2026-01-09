@@ -12,6 +12,7 @@ Permite **explorar películas, ver contenido, gestionar canales, iniciar sesión
 - **MVVM + ViewModel**
 - **Firebase Firestore**
 - **Jetpack Navigation Compose**
+- **Jetpack Media 3**
 - **Dependency Injection (Koin)**
 - **Coroutines + Flow**
 
