@@ -1,4 +1,5 @@
 Flicker | Streaming App 📱
+
 A modern Android application built with Kotlin and Jetpack Compose, following the best practices of Clean Architecture and MVVM pattern.
 
 🚀 Technical Stack
