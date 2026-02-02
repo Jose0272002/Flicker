@@ -3,6 +3,7 @@ Flicker | Streaming App 📱
 A modern Android application built with Kotlin and Jetpack Compose, following the best practices of Clean Architecture and MVVM pattern.
 
 🚀 Technical Stack
+
 Language: Kotlin + Coroutines & Flow for asynchronous operations.
 
 UI: Jetpack Compose (100% Declarative UI).
@@ -16,6 +17,7 @@ Backend: Firebase Firestore for real-time data and authentication.
 Image Loading: Coil.
 
 🏗️ Architecture
+
 The project is structured following Clean Architecture principles to ensure scalability, maintainability, and testability:
 
 Presentation Layer (UI): Uses MVVM (Model-View-ViewModel). The ViewModels manage the UI state using StateFlow and handle user interactions.
@@ -25,6 +27,7 @@ Domain Layer: Contains the business logic, Use Cases, and Entity models. It is a
 Data Layer: Responsible for data retrieval from Firebase. It implements the Repository pattern to abstract the data sources from the rest of the app.
 
 🛠️ Key Features implemented
+
 Asynchronous Data Flow: Leveraging Flow and SharedFlow to handle real-time updates from Firestore.
 
 Dependency Injection: Using Koin for decoupled components and easier testing.
